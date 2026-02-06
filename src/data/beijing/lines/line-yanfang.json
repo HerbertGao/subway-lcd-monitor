@@ -1,0 +1,78 @@
+{
+  "id": "line-yanfang",
+  "name": "燕房线",
+  "nameEn": "Yanfang Line",
+  "color": "#D85F26",
+  "isLoop": false,
+  "stations": [
+    {
+      "id": "yancundong",
+      "name": "阎村东",
+      "nameEn": "Yancundong",
+      "transfers": [
+        {
+          "lineId": "line-fangshan",
+          "lineName": "房山线",
+          "lineColor": "#E66032"
+        }
+      ],
+      "doorSide": "right"
+    },
+    {
+      "id": "zicaowu",
+      "name": "紫草坞",
+      "nameEn": "Zicaowu",
+      "transfers": [],
+      "doorSide": "right"
+    },
+    {
+      "id": "yancun",
+      "name": "阎村",
+      "nameEn": "Yancun",
+      "transfers": [],
+      "doorSide": "right"
+    },
+    {
+      "id": "xingcheng",
+      "name": "星城",
+      "nameEn": "Xingcheng",
+      "transfers": [],
+      "doorSide": "right"
+    },
+    {
+      "id": "dashihedong",
+      "name": "大石河东",
+      "nameEn": "Dashihedong",
+      "transfers": [],
+      "doorSide": "right"
+    },
+    {
+      "id": "magezhuang",
+      "name": "马各庄",
+      "nameEn": "Magezhuang",
+      "transfers": [],
+      "doorSide": "right"
+    },
+    {
+      "id": "raolefu",
+      "name": "饶乐府",
+      "nameEn": "Raolefu",
+      "transfers": [],
+      "doorSide": "right"
+    },
+    {
+      "id": "fangshangchengguan",
+      "name": "房山城关",
+      "nameEn": "Fangshan Chengguan",
+      "transfers": [],
+      "doorSide": "right"
+    },
+    {
+      "id": "yanshan",
+      "name": "燕山",
+      "nameEn": "Yanshan",
+      "transfers": [],
+      "doorSide": "right"
+    }
+  ]
+}

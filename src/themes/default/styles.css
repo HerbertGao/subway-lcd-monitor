@@ -1,0 +1,14 @@
+:root {
+  --lcd-bg: #001428;
+  --lcd-fg: #ffffff;
+  --lcd-line-color: #3399ff;
+  --lcd-passed-station: #666666;
+  --lcd-current-station: #ff6600;
+  --lcd-future-station: #ffffff;
+  --lcd-header-bg: #002850;
+  --lcd-header-fg: #ffffff;
+  --lcd-font-station: "Microsoft YaHei", "PingFang SC", sans-serif;
+  --lcd-font-station-en: Arial, Helvetica, sans-serif;
+  --lcd-font-info: "Microsoft YaHei", "PingFang SC", sans-serif;
+  --lcd-font-title: "Microsoft YaHei", "PingFang SC", sans-serif;
+}
