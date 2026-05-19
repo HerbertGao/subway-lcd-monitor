@@ -1,7 +1,7 @@
 import type { Line, Network } from './models/network'
 
 export interface ValidationError {
-  type: 'duplicate-station-id' | 'invalid-transfer-ref'
+  type: 'duplicate-station-id' | 'duplicate-line-id' | 'invalid-transfer-ref'
   message: string
   lineId: string
   stationId?: string
@@ -58,7 +58,7 @@ export function validateNetwork(network: Network, lines: Line[]): ValidationErro
   for (const line of lines) {
     if (lineIdsSeen.has(line.id)) {
       errors.push({
-        type: 'duplicate-station-id',
+        type: 'duplicate-line-id',
         message: `城市 "${network.city}" 中存在重复的线路 ID: "${line.id}"`,
         lineId: line.id,
       })

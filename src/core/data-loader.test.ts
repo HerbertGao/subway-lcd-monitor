@@ -13,6 +13,19 @@ describe('data-loader', () => {
     it('城市数据文件缺失时抛错', () => {
       expect(() => loadNetwork('atlantis')).toThrow(/线网数据文件不存在/)
     })
+
+    it('城市缺失时错误消息含 city 与数据文件路径', () => {
+      let caught: unknown
+      try {
+        loadNetwork('atlantis')
+      } catch (e) {
+        caught = e
+      }
+      expect(caught).toBeInstanceOf(Error)
+      const message = (caught as Error).message
+      expect(message).toContain('atlantis')
+      expect(message).toContain('/src/data/atlantis/network.json')
+    })
   })
 
   describe('loadLine', () => {
@@ -30,6 +43,20 @@ describe('data-loader', () => {
 
     it('城市不存在时加载线路也抛错', () => {
       expect(() => loadLine('atlantis', 'line-yanfang')).toThrow(/线路数据文件不存在/)
+    })
+
+    it('线路缺失时错误消息含 city、lineId 与数据文件路径', () => {
+      let caught: unknown
+      try {
+        loadLine('beijing', 'line-nonexistent')
+      } catch (e) {
+        caught = e
+      }
+      expect(caught).toBeInstanceOf(Error)
+      const message = (caught as Error).message
+      expect(message).toContain('beijing')
+      expect(message).toContain('line-nonexistent')
+      expect(message).toContain('/src/data/beijing/lines/line-nonexistent.json')
     })
   })
 

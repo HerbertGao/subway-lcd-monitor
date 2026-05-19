@@ -1,7 +1,8 @@
 # dev-tooling 规范
 
 ## 目的
-待定 - 由归档变更 phase1-engineering-baseline 创建。归档后请更新目的。
+dev-tooling 能力定义 subway-lcd-monitor 的开发工程化要求，涵盖代码静态检查（ESLint）、统一格式化（Prettier）、核心逻辑层单元测试（Vitest）、标准开发脚本与 Node 版本约束，以及在 push / pull request 上自动校验的持续集成流水线。
+
 ## 需求
 ### 需求:项目必须提供统一的代码静态检查
 
