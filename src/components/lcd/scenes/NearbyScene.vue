@@ -87,9 +87,7 @@
                   ? nameFit(i, station).availableWidth
                   : undefined
               "
-              :lengthAdjust="
-                nameFit(i, station).needsCompression ? 'spacingAndGlyphs' : undefined
-              "
+              :lengthAdjust="nameFit(i, station).needsCompression ? 'spacingAndGlyphs' : undefined"
             >
               {{ station.name }}
             </text>

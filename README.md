@@ -1,82 +1,119 @@
-# 地铁 LCD 报站显示屏模拟器
+English | [简体中文](./README.zh-CN.md)
 
-> Subway LCD Monitor — 基于 Vue 3 + TypeScript 的地铁车站报站屏模拟器
+# Subway LCD Monitor
 
-模拟地铁列车运行过程中车厢内 LCD 报站屏的显示效果。提供可控的列车运行状态切换，实时展示线路全程图、附近站点、到站提示等画面，并支持按线路 / 城市分级的主题定制。
+> An MTR-style subway in-car LCD announcement display simulator, built with Vue 3 + TypeScript.
 
-## 功能特性
+Subway LCD Monitor reproduces the look and behaviour of the LCD announcement screen mounted inside a metro carriage. It renders an MTR-style ultra-wide status bar that cycles through a full-route line map, a nearby-stations view and an arrival close-up, all driven by a controllable train running state and a per-line / per-city themeable visual system.
 
-- **LCD 画面轮播**：全程线路图、附近站点、到站提示等多种画面，按列车状态自动轮播
-- **列车状态机**：列车在「停站 → 发车 → 运行 → 进站」四个状态间循环，支持自动 / 手动模式
-- **控制面板**：切换线路、运行方向、列车状态，手动指定画面
-- **主题系统**：按「线路 > 城市 > 默认」优先级解析主题，颜色、字体、画面配置均可定制
-- **数据驱动**：地铁线网以 JSON 描述，含站点中英文名、换乘信息、开门方向等
-- **分层架构**：数据层 / 核心逻辑层 / 渲染层解耦，核心逻辑为纯 TypeScript，与框架无关
+**Live demo:** <https://herbertgao.github.io/subway-lcd-monitor/>
 
-## 技术栈
+## Features
 
-- **Vue 3**（Composition API）+ **TypeScript**（strict 模式）
-- **Vite** 构建与开发服务器
-- **Pinia** 状态管理
-- **pnpm** 包管理
-- 纯 CSS + SVG 渲染，无第三方 UI 组件库
+- **MTR-style LCD panel** — an ultra-wide 7:2 status bar with the MTR look: light-grey screen background, a two-tone line strip, a yellow safety bar and a blue hint bar.
+- **Three-scene rotation** — the panel cycles through three scenes: full-route line map, nearby-stations close-up, and arrival station close-up.
+- **Dual state machines** — a `TrainFSM` drives the train through `STOPPED → DEPARTING → RUNNING → ARRIVING`, while a `SceneRotator` rotates scenes by duration within each train state, with manual override.
+- **Transfer rendering** — at interchange stations the panel draws transfer-line branches off the main line.
+- **Layered SVG rendering** — each scene is composed of dedicated SVG layers (background, line, station dots, markers, text, transfer branches).
+- **Tiered theme system** — colours, fonts and scene configuration resolve through a three-level merge (line > city > default) and are injected as CSS variables for dynamic re-skinning.
+- **Data-driven** — the metro network is described as JSON (bilingual station names, transfer info, door-opening side), with strict TypeScript types.
+- **Control panel** — switch line, running direction and train state, or pin a specific scene manually.
+- **Layered architecture** — data / core-logic / rendering layers are decoupled; the core logic is framework-agnostic pure TypeScript.
 
-## 快速开始
+## Tech Stack
 
-环境要求：Node.js 18+、pnpm。
+- **Vue 3** (Composition API, `<script setup>`) + **TypeScript** (strict mode)
+- **Vite 7** — build tool and dev server
+- **Pinia** — state management
+- **Vitest** — unit testing for the core-logic layer
+- **pnpm** — package manager
+- Plain CSS + SVG rendering, no third-party UI component library
+
+## Quick Start
+
+Requirements:
+
+- **Node.js** `^20.19.0 || ^22.13.0 || >=24`
+- **pnpm** `11.1.2`
 
 ```bash
-# 安装依赖
+# install dependencies
 pnpm install
 
-# 启动开发服务器（默认 http://localhost:5173）
+# start the dev server (defaults to http://localhost:5173)
 pnpm dev
 
-# 生产构建
+# production build
 pnpm build
 
-# 预览构建产物
+# preview the build output
 pnpm preview
 ```
 
-## 项目结构
+Other useful scripts:
+
+```bash
+pnpm lint          # ESLint, zero warnings allowed
+pnpm format:check  # Prettier format check
+pnpm type-check    # vue-tsc type checking
+pnpm test          # Vitest unit tests
+```
+
+## Deployment
+
+Pushes to `master` are built and published to GitHub Pages automatically by `.github/workflows/deploy.yml`.
+
+> **First-time setup:** before the first deploy, open the repository **Settings → Pages → Source** and select **GitHub Actions**. This cannot be done from code and must be done once manually, otherwise the first deployment will fail.
+
+## Project Structure
 
 ```
 src/
-├── main.ts              # 应用入口
-├── App.vue              # 根组件
-├── core/                # 纯 TypeScript 核心逻辑（与框架无关）
-│   ├── models/          # network / train / theme 类型定义
-│   ├── train-fsm.ts     # 列车状态机
-│   ├── scene-rotator.ts # 画面轮播控制器
-│   ├── data-loader.ts   # JSON 数据加载
-│   └── theme-resolver.ts# 主题分级解析
-├── composables/         # Vue 组合式函数（桥接核心逻辑与响应式）
-├── stores/              # Pinia 状态仓库（line / simulation）
+├── main.ts              # application entry
+├── App.vue              # root component
+├── core/                # framework-agnostic pure TypeScript core logic
+│   ├── models/          # network / train / theme type definitions
+│   ├── train-fsm.ts     # train state machine
+│   ├── scene-rotator.ts # scene rotation controller
+│   ├── data-loader.ts   # JSON data loading
+│   ├── data-validator.ts# network data integrity validation
+│   ├── theme-resolver.ts# tiered theme resolution
+│   ├── train-state-visuals.ts # per-state visual derivation
+│   ├── local-network.ts # local network helpers
+│   └── logger.ts        # levelled logging facility
+├── composables/         # Vue composables bridging core logic and reactivity
+├── stores/              # Pinia stores (line / simulation)
 ├── components/
-│   ├── lcd/             # LCD 显示组件与各画面（scenes/）
-│   └── controls/        # 控制面板组件
-├── themes/              # 主题定义（default/ 等）
-└── data/                # 地铁线网 JSON 数据（如 beijing/）
+│   ├── lcd/             # LCD display components and scenes (scenes/)
+│   ├── controls/        # control panel components
+│   └── common/          # shared components (e.g. ErrorBoundary)
+├── themes/              # theme definitions (default/ etc.)
+└── data/                # metro network JSON data (e.g. beijing/)
 
-openspec/                # OpenSpec 提案与设计文档
+openspec/                # OpenSpec capability specs and change proposals
 ```
 
-## 架构概览
+## Architecture Overview
 
-采用三层架构：
+A three-layer architecture:
 
-1. **数据层** `src/data/` —— 静态 JSON 描述地铁线网，配合 TypeScript 类型定义
-2. **核心逻辑层** `src/core/` —— 纯 TypeScript，包含状态机、数据加载、主题解析
-3. **渲染层** `src/components/` + `src/composables/` —— Vue 组件与 CSS 渲染
+1. **Data layer** — `src/data/` — static JSON describing the metro network (Beijing Subway Yanfang & Fangshan lines), backed by TypeScript types.
+2. **Core-logic layer** — `src/core/` — framework-agnostic pure TypeScript: state machines, data loading and validation, theme resolution, logging.
+3. **Rendering layer** — `src/components/` + `src/composables/` — Vue components and CSS / SVG rendering.
 
-双状态机协同：
+Two cooperating state machines:
 
-- **列车状态机（TrainFSM）**：驱动列车在 `STOPPED → DEPARTING → RUNNING → ARRIVING` 间循环
-- **画面轮播器（SceneRotator）**：每个列车状态对应一组画面，按时长自动轮播，支持手动覆盖
+- **Train state machine (`TrainFSM`)** — drives the train through `STOPPED → DEPARTING → RUNNING → ARRIVING`, supporting automatic and manual modes.
+- **Scene rotator (`SceneRotator`)** — each train state maps to a set of scenes that auto-rotate by duration, with manual override.
 
-主题按「线路级 > 城市级 > 默认级」优先级合并解析，通过 CSS 变量注入实现动态换肤。
+The MTR-style remaster was delivered in three phases — **visual** (MTR colour scheme, ultra-wide proportions, scene layouts), **states** (running-state-driven station dots, station close-ups, door-side hints) and **transfer content** (transfer-line branches at interchange stations).
 
-## 文档
+Themes resolve through a **line > city > default** tiered merge and are injected via CSS variables for dynamic re-skinning. Scenes are rendered as layered SVG (background, line, dots, markers, text, transfer branches).
 
-设计提案与规格说明位于 `openspec/changes/subway-lcd-simulator/`，包含 `proposal.md`、`design.md`、`tasks.md` 及各能力的 `specs/`。
+## Documentation
+
+Specs and change history live under `openspec/`:
+
+- `openspec/specs/` — current capability specifications (`dev-tooling`, `mtr-visual-style`, `mtr-train-states`, `experience-adaptation`, `runtime-robustness`).
+- `openspec/changes/` — in-progress change proposals (`proposal.md`, `design.md`, `tasks.md`).
+- `openspec/changes/archive/` — archived changes, including the MTR-style remaster phases.

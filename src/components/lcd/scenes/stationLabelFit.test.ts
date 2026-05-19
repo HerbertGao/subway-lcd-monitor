@@ -43,9 +43,7 @@ describe('stationLabelFit', () => {
         fit.availableWidth + 1e-6
       )
       // 仍在字号下限之上
-      expect(fit.fontSize).toBeGreaterThanOrEqual(
-        Math.max(baseFontSize * 0.6, 7)
-      )
+      expect(fit.fontSize).toBeGreaterThanOrEqual(Math.max(baseFontSize * 0.6, 7))
     })
 
     it('超长英文名字号触底并被标记为需压缩', () => {

@@ -32,10 +32,7 @@
     <!-- 「請小心空隙」类（STOPPED / ARRIVING）两端各渲染一个港铁式红圈警示图标，
          「請勿靠近車門」类（DEPARTING）不渲染；是否带图标由 safetyBarHasIcon 判定，
          黄条版式（高度）经 --has-icon 类名微调。 -->
-    <div
-      class="arrival__safety-bar"
-      :class="{ 'arrival__safety-bar--has-icon': safetyBarHasIcon }"
-    >
+    <div class="arrival__safety-bar" :class="{ 'arrival__safety-bar--has-icon': safetyBarHasIcon }">
       <!--
         港铁式红圈警示图标（纯内联 SVG，无图片资源）：
         红圈 + 列车（车头/车门）+ 行人组合。图形单列于 <defs>，左右两端经

@@ -87,9 +87,7 @@
                   ? nameFit(i, station).availableWidth
                   : undefined
               "
-              :lengthAdjust="
-                nameFit(i, station).needsCompression ? 'spacingAndGlyphs' : undefined
-              "
+              :lengthAdjust="nameFit(i, station).needsCompression ? 'spacingAndGlyphs' : undefined"
             >
               {{ station.name }}
             </text>
@@ -159,10 +157,7 @@
           下一站非换乘站、或换乘线路均不可解析时不渲染（transferBranches 为空）。
         -->
         <g v-if="transferBranches.length > 0" class="layer-transfer-branch">
-          <template
-            v-for="branch in transferBranches"
-            :key="'branch-' + branch.id"
-          >
+          <template v-for="branch in transferBranches" :key="'branch-' + branch.id">
             <!-- 连接杆：从换乘站圆点垂直向下连到支线线路条 -->
             <line
               :x1="branch.anchorX"
@@ -389,11 +384,7 @@ const resolvedBranches = computed(() => {
   if (sim.trainState !== TrainState.RUNNING) return []
   const next = sim.nextStation
   if (!next) return []
-  return resolveTransferBranches(
-    next,
-    lineStore.availableLines,
-    sim.activeLine?.id ?? null
-  )
+  return resolveTransferBranches(next, lineStore.availableLines, sim.activeLine?.id ?? null)
 })
 
 /**
@@ -481,10 +472,7 @@ const transferBranches = computed(() => {
       // 名牌顶边 thisBranchY - labelYOffset - 9 仍在 BRANCH_MIN_TOP_Y
       // 下方、不侵入主线区。
       labelX = (x1 + x2) / 2 - labelWidth / 2
-      labelY =
-        branchIndex === 0
-          ? thisBranchY - labelYOffset
-          : thisBranchY + labelYOffset
+      labelY = branchIndex === 0 ? thisBranchY - labelYOffset : thisBranchY + labelYOffset
     }
     return {
       id: branch.id,

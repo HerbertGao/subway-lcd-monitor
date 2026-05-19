@@ -54,11 +54,7 @@ export function estimateTextWidth(text: string, fontSize: number): number {
  * @param stationGap    相邻站间距（viewBox user unit）
  * @returns 适配后的字号、是否需压缩、可用宽度
  */
-export function fitStationLabel(
-  text: string,
-  baseFontSize: number,
-  stationGap: number
-): LabelFit {
+export function fitStationLabel(text: string, baseFontSize: number, stationGap: number): LabelFit {
   const availableWidth = Math.max(0, stationGap * SAFE_RATIO)
   const minFontSize = Math.max(baseFontSize * MIN_FONT_RATIO, MIN_FONT_ABSOLUTE)
 
