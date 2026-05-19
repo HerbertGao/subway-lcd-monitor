@@ -11,7 +11,11 @@
 <style scoped>
 .lcd-frame {
   box-sizing: border-box;
-  /* 960px LCD 设计基准 + 外框 chrome（padding 16px×2 + border 2px×2 = 36px） */
+  /* 960px LCD 设计基准（7∶2 比例下高度由 LcdScreen 的 aspect-ratio 派生，
+     约 960 × 2/7 ≈ 274px）+ 外框 chrome（padding 16px×2 + border 2px×2 = 36px）
+     → 含外框整体设计宽 996px。box-sizing: border-box 使 padding/border 计入
+     width，配合 width: min(996px, 100%) + max-width: 100% 保证含外框整体在
+     窄屏（320–1280px）收缩适应可用宽度、不溢出、不产生横向滚动。 */
   width: min(996px, 100%);
   max-width: 100%;
   background: #1a1a1a;

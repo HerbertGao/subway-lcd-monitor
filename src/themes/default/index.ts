@@ -6,14 +6,20 @@ export const defaultTheme: Theme = {
   name: '默认主题',
   visual: {
     colors: {
-      background: '#001428',
-      foreground: '#ffffff',
+      // 港铁西铁线 LCD 报站屏配色
+      background: '#e8e8e8',
+      foreground: '#1a1a1a',
       lineColor: '#3399ff',
-      passedStation: '#666666',
-      currentStation: '#ff6600',
-      futureStation: '#ffffff',
-      headerBackground: '#002850',
+      passedStation: '#9a9a9a',
+      currentStation: '#1a1a1a',
+      futureStation: '#1a1a1a',
+      headerBackground: '#13315c',
       headerForeground: '#ffffff',
+      safetyBar: '#f2b600',
+      safetyBarText: '#1a1a1a',
+      infoBar: '#13315c',
+      infoBarText: '#ffffff',
+      stationDot: '#ffffff',
     },
     fonts: {
       stationName: '"Microsoft YaHei", "PingFang SC", sans-serif',

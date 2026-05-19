@@ -19,6 +19,16 @@ export interface ColorConfig {
   futureStation: string
   headerBackground: string
   headerForeground: string
+  /** 站名特写黄色安全条背景色 */
+  safetyBar: string
+  /** 黄色安全条文字色 */
+  safetyBarText: string
+  /** 线路图底部蓝色提示条背景色 */
+  infoBar: string
+  /** 蓝色提示条文字色 */
+  infoBarText: string
+  /** 站点圆点填充色（白色实心） */
+  stationDot: string
 }
 
 /** 字体配置 */

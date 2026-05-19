@@ -1,12 +1,18 @@
 :root {
-  --lcd-bg: #001428;
-  --lcd-fg: #ffffff;
+  /* 港铁西铁线 LCD 报站屏配色（fallback；运行时由 useTheme 注入覆盖） */
+  --lcd-bg: #e8e8e8;
+  --lcd-fg: #1a1a1a;
   --lcd-line-color: #3399ff;
-  --lcd-passed-station: #666666;
-  --lcd-current-station: #ff6600;
-  --lcd-future-station: #ffffff;
-  --lcd-header-bg: #002850;
+  --lcd-passed-station: #9a9a9a;
+  --lcd-current-station: #1a1a1a;
+  --lcd-future-station: #1a1a1a;
+  --lcd-header-bg: #13315c;
   --lcd-header-fg: #ffffff;
+  --lcd-safety-bar: #f2b600;
+  --lcd-safety-bar-text: #1a1a1a;
+  --lcd-info-bar: #13315c;
+  --lcd-info-bar-text: #ffffff;
+  --lcd-station-dot: #ffffff;
   --lcd-font-station: 'Microsoft YaHei', 'PingFang SC', sans-serif;
   --lcd-font-station-en: Arial, Helvetica, sans-serif;
   --lcd-font-info: 'Microsoft YaHei', 'PingFang SC', sans-serif;

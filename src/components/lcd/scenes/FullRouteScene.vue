@@ -5,117 +5,97 @@
       class="full-route__svg"
       role="img"
       aria-labelledby="full-route-title full-route-desc"
+      preserveAspectRatio="xMidYMid meet"
     >
       <title id="full-route-title">线路全程图</title>
       <desc id="full-route-desc">{{ a11yDesc }}</desc>
-      <!-- 线路连线 -->
-      <line
-        :x1="stationX(0)"
-        :y1="lineY"
-        :x2="stationX(stations.length - 1)"
-        :y2="lineY"
-        :stroke="lineColor"
-        stroke-width="6"
-        :stroke-linecap="lineCap"
-      />
 
-      <!-- 已过区间高亮 -->
-      <line
-        v-if="isForward && currentIndex > 0"
-        :x1="stationX(0)"
-        :y1="lineY"
-        :x2="stationX(currentIndex)"
-        :y2="lineY"
-        stroke="var(--lcd-passed-station)"
-        stroke-width="6"
-        :stroke-linecap="lineCap"
-      />
-      <line
-        v-if="!isForward && currentIndex < stations.length - 1"
-        :x1="stationX(currentIndex)"
-        :y1="lineY"
-        :x2="stationX(stations.length - 1)"
-        :y2="lineY"
-        stroke="var(--lcd-passed-station)"
-        stroke-width="6"
-        :stroke-linecap="lineCap"
-      />
+      <!-- 背景层：浅灰屏底 -->
+      <g class="layer-bg">
+        <rect x="0" y="0" :width="svgWidth" :height="svgHeight" fill="var(--lcd-bg)" />
+      </g>
 
-      <!-- 方向箭头 -->
-      <polygon :points="arrowPoints" :fill="lineColor" />
-
-      <!-- 区间箭头 ››› -->
-      <polygon
-        v-for="(chevron, ci) in allIntervalChevrons"
-        :key="'chevron-' + ci"
-        :points="chevron.points"
-        :fill="chevron.color"
-        opacity="0.9"
-      />
-
-      <!-- 站点 -->
-      <g v-for="(station, i) in stations" :key="station.id">
-        <!-- 换乘标记（外圈） -->
-        <rect
-          v-if="station.transfers.length > 0"
-          :x="stationX(i) - 9"
-          :y="lineY - 9"
-          width="18"
-          height="18"
-          rx="3"
-          fill="none"
-          :stroke="stationColor(i)"
-          stroke-width="2"
+      <!-- 线路层：双色线路条（已过段灰 / 未过段 line.color） -->
+      <g class="layer-line">
+        <line
+          v-for="(seg, si) in lineSegments"
+          :key="'seg-' + si"
+          :x1="seg.x1"
+          :y1="lineY"
+          :x2="seg.x2"
+          :y2="lineY"
+          :stroke="seg.passed ? 'var(--lcd-passed-station)' : lineColor"
+          :stroke-width="lineWidth"
+          :stroke-linecap="lineCap"
         />
+      </g>
 
-        <!-- 站点圆点 -->
+      <!-- 站点层：统一白色实心圆点 -->
+      <g class="layer-dot">
         <circle
+          v-for="(station, i) in stations"
+          :key="'dot-' + station.id"
           :cx="stationX(i)"
           :cy="lineY"
-          :r="isHighlight(i) ? 8 : 6"
-          :fill="stationColor(i)"
-          :stroke="isHighlight(i) ? '#fff' : 'none'"
-          :stroke-width="isHighlight(i) ? 2 : 0"
+          :r="i === currentIndex ? dotRadius + 2 : dotRadius"
+          fill="var(--lcd-station-dot)"
+          stroke="var(--lcd-fg)"
+          stroke-width="2"
         />
+      </g>
 
-        <!-- 站名（中文） -->
-        <text
-          :x="stationX(i)"
-          :y="lineY - 22"
-          text-anchor="middle"
-          :fill="stationColor(i)"
-          :font-size="isHighlight(i) ? 13 : 11"
-          :font-weight="isHighlight(i) ? 'bold' : 'normal'"
-          font-family="var(--lcd-font-station)"
-        >
-          {{ station.name }}
-        </text>
+      <!-- 标记层：当前站处行进方向箭头 -->
+      <g class="layer-mark">
+        <polygon v-if="directionArrow" :points="directionArrow" fill="var(--lcd-fg)" />
+      </g>
 
-        <!-- 换乘线路标记 -->
-        <g v-if="station.transfers.length > 0">
-          <rect
-            v-for="(transfer, ti) in station.transfers"
-            :key="transfer.lineId"
-            :x="stationX(i) - 16"
-            :y="lineY + 20 + ti * 16"
-            width="32"
-            height="14"
-            rx="7"
-            :fill="transfer.lineColor"
-          />
+      <!-- 文字层：站名中文（上）/ 英文（下），已过站名转灰 -->
+      <g class="layer-text">
+        <g v-for="(station, i) in stations" :key="'text-' + station.id">
           <text
-            v-for="(transfer, ti) in station.transfers"
-            :key="transfer.lineId + '-text'"
             :x="stationX(i)"
-            :y="lineY + 31 + ti * 16"
+            :y="lineY - 24"
             text-anchor="middle"
-            fill="#fff"
-            font-size="9"
+            :fill="isPassed(i) ? 'var(--lcd-passed-station)' : 'var(--lcd-current-station)'"
+            :font-size="i === currentIndex ? 15 : 13"
+            :font-weight="i === currentIndex ? 'bold' : 'normal'"
+            font-family="var(--lcd-font-station)"
+          >
+            {{ station.name }}
+          </text>
+          <text
+            :x="stationX(i)"
+            :y="lineY - 9"
+            text-anchor="middle"
+            :fill="isPassed(i) ? 'var(--lcd-passed-station)' : 'var(--lcd-future-station)'"
+            :font-size="i === currentIndex ? 10 : 9"
             font-family="var(--lcd-font-station-en)"
           >
-            {{ transfer.lineName }}
+            {{ station.nameEn }}
           </text>
         </g>
+      </g>
+
+      <!-- 提示条层：底部蓝色提示条 -->
+      <g class="layer-info-bar">
+        <rect
+          x="0"
+          :y="svgHeight - infoBarHeight"
+          :width="svgWidth"
+          :height="infoBarHeight"
+          fill="var(--lcd-info-bar)"
+        />
+        <text
+          :x="svgWidth / 2"
+          :y="svgHeight - infoBarHeight / 2"
+          text-anchor="middle"
+          dominant-baseline="central"
+          fill="var(--lcd-info-bar-text)"
+          font-size="14"
+          font-family="var(--lcd-font-info)"
+        >
+          {{ infoBarText }}
+        </text>
       </g>
     </svg>
   </div>
@@ -125,115 +105,45 @@
 import { computed } from 'vue'
 import { useSimulationStore } from '@/stores/simulation'
 import { useTheme } from '@/composables/useTheme'
-import { Direction, TrainState } from '@/core/models/train'
+import { Direction } from '@/core/models/train'
+import { useRouteLayout } from './useRouteLayout'
 
 const sim = useSimulationStore()
 const { currentTheme } = useTheme()
 
 const stations = computed(() => sim.activeLine?.stations ?? [])
-const currentIndex = computed(() => sim.currentStationIndex)
 const lineColor = computed(() => sim.activeLine?.color ?? 'var(--lcd-line-color)')
 const lineCap = computed(() => currentTheme.value.visual.lineCap)
-const isRunning = computed(() => sim.trainState === TrainState.RUNNING)
 
+// SVG 几何
 const padding = 60
-const svgHeight = 180
+const svgHeight = 200
+const infoBarHeight = 36
+const lineY = 96
+const dotRadius = 7
+const lineWidth = 6
 const svgWidth = computed(() => Math.max(stations.value.length * 90, 800))
-const lineY = 90
 
-function stationX(index: number): number {
-  const count = stations.value.length
-  if (count <= 1) return svgWidth.value / 2
-  const usable = svgWidth.value - padding * 2
-  return padding + (index / (count - 1)) * usable
-}
+const currentIndex = computed(() => sim.currentStationIndex)
 
-const isForward = computed(() => sim.direction === Direction.FORWARD)
+const { stationX, isPassed, lineSegments, directionArrow } = useRouteLayout({
+  stations,
+  currentVisibleIndex: currentIndex,
+  svgWidth,
+  svgHeight,
+  lineY,
+  padding,
+  dotRadius,
+})
+
+// 提示条层：本期固定占位文案（轮播文案属期二）
+const infoBarText = '請勿倚靠車門 Please do not lean on doors'
 
 const a11yDesc = computed(() => {
   const lineName = sim.activeLine?.name ?? '未选择线路'
   const stationName = sim.currentStation?.name ?? '未知站点'
-  const directionName = isForward.value ? '正向运行' : '反向运行'
+  const directionName = sim.direction === Direction.FORWARD ? '正向运行' : '反向运行'
   return `${lineName}全程图，当前站${stationName}，${directionName}`
-})
-
-/** 运行中高亮下一站，其他状态高亮当前站 */
-const highlightIndex = computed(() => {
-  if (isRunning.value) {
-    return isForward.value
-      ? Math.min(currentIndex.value + 1, stations.value.length - 1)
-      : Math.max(currentIndex.value - 1, 0)
-  }
-  return currentIndex.value
-})
-
-function isHighlight(index: number): boolean {
-  return index === highlightIndex.value
-}
-
-function isPassed(index: number): boolean {
-  if (isForward.value) {
-    // 运行中：出发站也算已过
-    return isRunning.value ? index <= currentIndex.value : index < currentIndex.value
-  }
-  return isRunning.value ? index >= currentIndex.value : index > currentIndex.value
-}
-
-function stationColor(index: number): string {
-  if (isHighlight(index)) return 'var(--lcd-current-station)'
-  if (isPassed(index)) return 'var(--lcd-passed-station)'
-  return 'var(--lcd-future-station)'
-}
-
-/** 所有区间的 ››› 小箭头，已过区间灰色，未过区间高亮 */
-const allIntervalChevrons = computed(() => {
-  const total = stations.value.length
-  if (total < 2) return []
-
-  const result: { points: string; color: string }[] = []
-  const chevronCount = 3
-  const chevronH = 5
-  const chevronW = 4
-  const dir = isForward.value ? 1 : -1
-
-  for (let i = 0; i < total - 1; i++) {
-    const fromX = stationX(i)
-    const toX = stationX(i + 1)
-    const gap = toX - fromX
-    if (gap < 30) continue
-
-    // 区间 i→i+1 是否已过
-    const passed = isForward.value ? i + 1 <= currentIndex.value : i >= currentIndex.value
-    const color = passed ? 'var(--lcd-passed-station)' : 'var(--lcd-future-station)'
-
-    for (let c = 0; c < chevronCount; c++) {
-      const t = (c + 1) / (chevronCount + 1)
-      const cx = fromX + t * gap
-      if (dir > 0) {
-        result.push({
-          points: `${cx - chevronW},${lineY - chevronH} ${cx - chevronW},${lineY + chevronH} ${cx + chevronW},${lineY}`,
-          color,
-        })
-      } else {
-        result.push({
-          points: `${cx + chevronW},${lineY - chevronH} ${cx + chevronW},${lineY + chevronH} ${cx - chevronW},${lineY}`,
-          color,
-        })
-      }
-    }
-  }
-  return result
-})
-
-const arrowPoints = computed(() => {
-  const dir = sim.direction
-  if (dir === Direction.FORWARD) {
-    const x = stationX(stations.value.length - 1) + 15
-    return `${x},${lineY - 6} ${x},${lineY + 6} ${x + 10},${lineY}`
-  } else {
-    const x = stationX(0) - 15
-    return `${x},${lineY - 6} ${x},${lineY + 6} ${x - 10},${lineY}`
-  }
 })
 </script>
 
@@ -244,7 +154,7 @@ const arrowPoints = computed(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 8px;
+  background: var(--lcd-bg);
 }
 
 .full-route__svg {

@@ -21,6 +21,11 @@ function makeDefaultTheme(): Theme {
         futureStation: '#cccccc',
         headerBackground: '#111111',
         headerForeground: '#eeeeee',
+        safetyBar: '#f2b600',
+        safetyBarText: '#1a1a1a',
+        infoBar: '#13315c',
+        infoBarText: '#ffffff',
+        stationDot: '#ffffff',
       },
       fonts: {
         stationName: 'FontA',

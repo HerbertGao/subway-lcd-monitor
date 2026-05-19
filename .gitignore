@@ -50,3 +50,6 @@ $RECYCLE.BIN/
 # Misc
 *.local
 *.tsbuildinfo
+
+# 参考素材（设计参考视频，不纳入版本控制）
+*.mkv
