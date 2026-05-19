@@ -44,12 +44,13 @@
     <!-- 场景切换 -->
     <div class="control-panel__section" v-if="sim.sceneList.length > 0">
       <h3 class="control-panel__title">画面切换</h3>
-      <div class="control-panel__scenes">
+      <div class="control-panel__scenes" role="group" aria-label="画面切换">
         <button
           v-for="(scene, i) in sim.sceneList"
           :key="scene.id"
           class="control-panel__scene-btn"
           :class="{ 'control-panel__scene-btn--active': i === sim.currentSceneIndex }"
+          :aria-pressed="i === sim.currentSceneIndex"
           @click="sim.goToScene(i)"
         >
           {{ scene.name }}
@@ -80,13 +81,15 @@ const directionLabel = computed(() => {
 
 <style scoped>
 .control-panel {
+  box-sizing: border-box;
   background: #222233;
   border-radius: 8px;
   padding: 16px;
   display: flex;
   flex-direction: column;
   gap: 16px;
-  width: 960px;
+  width: 100%;
+  max-width: 960px;
 }
 
 .control-panel__section {

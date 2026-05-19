@@ -1,6 +1,13 @@
 <template>
   <div class="full-route">
-    <svg :viewBox="`0 0 ${svgWidth} ${svgHeight}`" class="full-route__svg">
+    <svg
+      :viewBox="`0 0 ${svgWidth} ${svgHeight}`"
+      class="full-route__svg"
+      role="img"
+      aria-labelledby="full-route-title full-route-desc"
+    >
+      <title id="full-route-title">线路全程图</title>
+      <desc id="full-route-desc">{{ a11yDesc }}</desc>
       <!-- 线路连线 -->
       <line
         :x1="stationX(0)"
@@ -143,6 +150,13 @@ function stationX(index: number): number {
 
 const isForward = computed(() => sim.direction === Direction.FORWARD)
 
+const a11yDesc = computed(() => {
+  const lineName = sim.activeLine?.name ?? '未选择线路'
+  const stationName = sim.currentStation?.name ?? '未知站点'
+  const directionName = isForward.value ? '正向运行' : '反向运行'
+  return `${lineName}全程图，当前站${stationName}，${directionName}`
+})
+
 /** 运行中高亮下一站，其他状态高亮当前站 */
 const highlightIndex = computed(() => {
   if (isRunning.value) {
@@ -236,5 +250,6 @@ const arrowPoints = computed(() => {
 .full-route__svg {
   width: 100%;
   height: 100%;
+  display: block;
 }
 </style>

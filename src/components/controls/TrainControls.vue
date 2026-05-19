@@ -12,6 +12,9 @@
       class="train-controls__btn"
       :class="{ 'train-controls__btn--active': sim.isAutoMode }"
       :disabled="!sim.activeLine"
+      role="switch"
+      :aria-checked="sim.isAutoMode"
+      aria-label="自动运行"
       @click="sim.setAutoMode(!sim.isAutoMode)"
     >
       {{ sim.isAutoMode ? '自动运行中' : '手动模式' }}

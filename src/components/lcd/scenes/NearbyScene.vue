@@ -1,6 +1,13 @@
 <template>
   <div class="nearby">
-    <svg :viewBox="`0 0 ${svgWidth} ${svgHeight}`" class="nearby__svg">
+    <svg
+      :viewBox="`0 0 ${svgWidth} ${svgHeight}`"
+      class="nearby__svg"
+      role="img"
+      aria-labelledby="nearby-title nearby-desc"
+    >
+      <title id="nearby-title">附近站点图</title>
+      <desc id="nearby-desc">{{ a11yDesc }}</desc>
       <!-- 连线 -->
       <line
         :x1="nodeX(0)"
@@ -178,6 +185,13 @@ function nodeX(visibleIndex: number): number {
 
 const isForward = computed(() => sim.direction === Direction.FORWARD)
 
+const a11yDesc = computed(() => {
+  const lineName = sim.activeLine?.name ?? '未选择线路'
+  const stationName = sim.currentStation?.name ?? '未知站点'
+  const directionName = isForward.value ? '正向运行' : '反向运行'
+  return `${lineName}附近站点图，当前站${stationName}，${directionName}`
+})
+
 function isPassed(globalIndex: number): boolean {
   if (isForward.value) {
     return isRunning.value ? globalIndex <= currentIndex.value : globalIndex < currentIndex.value
@@ -261,5 +275,6 @@ const arrowPoints = computed(() => {
 .nearby__svg {
   width: 100%;
   height: 100%;
+  display: block;
 }
 </style>

@@ -10,9 +10,13 @@
 
 <style scoped>
 .lcd-frame {
+  box-sizing: border-box;
+  /* 960px LCD 设计基准 + 外框 chrome（padding 16px×2 + border 2px×2 = 36px） */
+  width: min(996px, 100%);
+  max-width: 100%;
   background: #1a1a1a;
   border-radius: 12px;
-  padding: 16px;
+  padding: clamp(6px, 2vw, 16px);
   box-shadow:
     0 4px 20px rgba(0, 0, 0, 0.5),
     inset 0 1px 0 rgba(255, 255, 255, 0.05);

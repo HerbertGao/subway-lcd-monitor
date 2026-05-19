@@ -1,8 +1,13 @@
 <template>
   <div class="line-selector">
     <div class="line-selector__group">
-      <label class="line-selector__label">城市</label>
-      <select v-model="selectedCity" class="line-selector__select" @change="onCityChange">
+      <label class="line-selector__label" for="line-selector-city">城市</label>
+      <select
+        id="line-selector-city"
+        v-model="selectedCity"
+        class="line-selector__select"
+        @change="onCityChange"
+      >
         <option value="" disabled>选择城市</option>
         <option v-for="city in cities" :key="city" :value="city">
           {{ cityNames[city] || city }}
@@ -11,8 +16,13 @@
     </div>
 
     <div class="line-selector__group">
-      <label class="line-selector__label">线路</label>
-      <select v-model="selectedLineId" class="line-selector__select" @change="onLineChange">
+      <label class="line-selector__label" for="line-selector-line">线路</label>
+      <select
+        id="line-selector-line"
+        v-model="selectedLineId"
+        class="line-selector__select"
+        @change="onLineChange"
+      >
         <option value="" disabled>选择线路</option>
         <option v-for="line in availableLines" :key="line.id" :value="line.id">
           {{ line.name }}
@@ -21,8 +31,13 @@
     </div>
 
     <div class="line-selector__group">
-      <label class="line-selector__label">方向</label>
-      <select v-model="selectedDirection" class="line-selector__select" @change="onDirectionChange">
+      <label class="line-selector__label" for="line-selector-direction">方向</label>
+      <select
+        id="line-selector-direction"
+        v-model="selectedDirection"
+        class="line-selector__select"
+        @change="onDirectionChange"
+      >
         <option :value="Direction.FORWARD">{{ forwardLabel }}</option>
         <option :value="Direction.BACKWARD">{{ backwardLabel }}</option>
       </select>
@@ -150,7 +165,6 @@ watch(
 }
 
 .line-selector__select:focus {
-  outline: none;
   border-color: #6688cc;
 }
 </style>

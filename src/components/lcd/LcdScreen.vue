@@ -67,8 +67,17 @@ const directionLabel = computed(() => {
   background: var(--lcd-bg, #001428);
   color: var(--lcd-fg, #ffffff);
   font-family: var(--lcd-font-info);
-  width: 960px;
-  height: 320px;
+  width: 100%;
+  aspect-ratio: 3 / 1;
+  /* 极窄屏（约 320/375px）下严格 3∶1 会把 LCD 屏压到约 90px 高，
+     内容区扣除 header/footer 后不足以容纳 ArrivalScene 含换乘行的最小排版，
+     会被 .lcd-screen__content 的 overflow:hidden 静默裁剪。
+     min-height 让宽 ÷ 3 < min-height 时高度让步、宽高比大于 3∶1。
+     取值依据（320px 视口，按 clamp 下限 + 最坏情况推算）：
+     header≈22 + footer≈21 + ArrivalScene「两行换乘 badge 且开门提示
+     文本换行」的最坏排版≈141 ≈184，留余量取 210px。
+     宽屏（视口≥约 960px）下 LCD 屏宽 ÷ 3 ≈ 308px > 210px，仍维持精确 3∶1。 */
+  min-height: 210px;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -77,17 +86,17 @@ const directionLabel = computed(() => {
 .lcd-screen__header {
   background: var(--lcd-header-bg, #002850);
   color: var(--lcd-header-fg, #ffffff);
-  padding: 8px 16px;
+  padding: clamp(4px, 1.2vw, 8px) clamp(8px, 2.5vw, 16px);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 16px;
+  font-size: clamp(12px, 2.5vw, 16px);
   flex-shrink: 0;
 }
 
 .lcd-screen__line-name {
   font-weight: bold;
-  font-size: 18px;
+  font-size: clamp(13px, 2.8vw, 18px);
 }
 
 .lcd-screen__content {
@@ -98,11 +107,11 @@ const directionLabel = computed(() => {
 
 .lcd-screen__footer {
   background: var(--lcd-header-bg, #002850);
-  padding: 6px 16px;
+  padding: clamp(3px, 1vw, 6px) clamp(8px, 2.5vw, 16px);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 14px;
+  font-size: clamp(11px, 2.2vw, 14px);
   flex-shrink: 0;
 }
 

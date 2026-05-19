@@ -39,25 +39,29 @@ const doorSideLabel = computed(() => {
 
 <style scoped>
 .arrival {
+  box-sizing: border-box;
   width: 100%;
   height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 16px;
+  /* clamp 下限经下调，使极窄屏（320/375px）下含两行换乘的最坏排版可放入
+     LcdScreen min-height（210px）约束下的内容区（约 167px），
+     ArrivalScene scrollHeight ≤ clientHeight、不被裁剪。 */
+  padding: clamp(4px, 3vw, 16px);
   text-align: center;
 }
 
 .arrival__label {
-  font-size: 16px;
+  font-size: clamp(10px, 2.5vw, 16px);
   opacity: 0.8;
-  margin-bottom: 8px;
+  margin-bottom: clamp(2px, 1.2vw, 8px);
   font-family: var(--lcd-font-info);
 }
 
 .arrival__name {
-  font-size: 42px;
+  font-size: clamp(18px, 6.5vw, 42px);
   font-weight: bold;
   font-family: var(--lcd-font-station);
   color: var(--lcd-current-station);
@@ -65,35 +69,37 @@ const doorSideLabel = computed(() => {
 }
 
 .arrival__name-en {
-  font-size: 18px;
+  font-size: clamp(10px, 2.8vw, 18px);
   font-family: var(--lcd-font-station-en);
   opacity: 0.8;
-  margin-bottom: 12px;
+  margin-bottom: clamp(3px, 1.8vw, 12px);
 }
 
 .arrival__door {
-  font-size: 14px;
+  font-size: clamp(9px, 2.2vw, 14px);
   font-family: var(--lcd-font-info);
   opacity: 0.9;
-  margin-bottom: 8px;
+  margin-bottom: clamp(2px, 1.2vw, 8px);
 }
 
 .arrival__transfers {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 8px;
+  justify-content: center;
+  gap: clamp(4px, 1.2vw, 8px);
   margin-top: 4px;
 }
 
 .arrival__transfer-label {
-  font-size: 14px;
+  font-size: clamp(9px, 2.2vw, 14px);
   font-family: var(--lcd-font-info);
 }
 
 .arrival__transfer-badge {
-  padding: 4px 12px;
+  padding: clamp(1px, 0.8vw, 4px) clamp(6px, 1.8vw, 12px);
   border-radius: 12px;
-  font-size: 12px;
+  font-size: clamp(8px, 2vw, 12px);
   color: #fff;
   font-weight: bold;
   font-family: var(--lcd-font-station);

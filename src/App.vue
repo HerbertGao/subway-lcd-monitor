@@ -48,7 +48,7 @@ body {
   justify-content: center;
   min-height: 100vh;
   gap: 24px;
-  padding: 24px;
+  padding: clamp(8px, 4vw, 24px);
 }
 
 .app-title {
@@ -56,5 +56,12 @@ body {
   font-weight: 500;
   color: #aaa;
   letter-spacing: 2px;
+}
+
+button:focus-visible,
+select:focus-visible {
+  outline: 2px solid #88aaff;
+  outline-offset: 2px;
+  border-radius: 6px;
 }
 </style>
