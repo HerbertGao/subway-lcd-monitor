@@ -3,8 +3,10 @@
     <svg :viewBox="`0 0 ${svgWidth} ${svgHeight}`" class="nearby__svg">
       <!-- 连线 -->
       <line
-        :x1="nodeX(0)" :y1="lineY"
-        :x2="nodeX(visibleStations.length - 1)" :y2="lineY"
+        :x1="nodeX(0)"
+        :y1="lineY"
+        :x2="nodeX(visibleStations.length - 1)"
+        :y2="lineY"
         :stroke="lineColor"
         stroke-width="8"
         stroke-linecap="round"
@@ -13,8 +15,10 @@
       <!-- 已过区间 (正向：从左到当前站) -->
       <line
         v-if="isForward && currentVisibleIndex > 0"
-        :x1="nodeX(0)" :y1="lineY"
-        :x2="nodeX(currentVisibleIndex)" :y2="lineY"
+        :x1="nodeX(0)"
+        :y1="lineY"
+        :x2="nodeX(currentVisibleIndex)"
+        :y2="lineY"
         stroke="var(--lcd-passed-station)"
         stroke-width="8"
         stroke-linecap="round"
@@ -22,8 +26,10 @@
       <!-- 已过区间 (反向：从当前站到右) -->
       <line
         v-if="!isForward && currentVisibleIndex < visibleStations.length - 1"
-        :x1="nodeX(currentVisibleIndex)" :y1="lineY"
-        :x2="nodeX(visibleStations.length - 1)" :y2="lineY"
+        :x1="nodeX(currentVisibleIndex)"
+        :y1="lineY"
+        :x2="nodeX(visibleStations.length - 1)"
+        :y2="lineY"
         stroke="var(--lcd-passed-station)"
         stroke-width="8"
         stroke-linecap="round"
@@ -86,7 +92,8 @@
             :key="transfer.lineId"
             :x="nodeX(i) - 28"
             :y="lineY + 22 + ti * 20"
-            width="56" height="16"
+            width="56"
+            height="16"
             rx="8"
             :fill="transfer.lineColor"
           />
@@ -173,13 +180,9 @@ const isForward = computed(() => sim.direction === Direction.FORWARD)
 
 function isPassed(globalIndex: number): boolean {
   if (isForward.value) {
-    return isRunning.value
-      ? globalIndex <= currentIndex.value
-      : globalIndex < currentIndex.value
+    return isRunning.value ? globalIndex <= currentIndex.value : globalIndex < currentIndex.value
   }
-  return isRunning.value
-    ? globalIndex >= currentIndex.value
-    : globalIndex > currentIndex.value
+  return isRunning.value ? globalIndex >= currentIndex.value : globalIndex > currentIndex.value
 }
 
 function nodeColor(visibleIndex: number): string {

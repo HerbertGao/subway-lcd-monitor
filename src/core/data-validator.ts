@@ -46,10 +46,7 @@ function validateTransferRefs(line: Line, network: Network): ValidationError[] {
 
 /** 校验线路数据 */
 export function validateLine(line: Line, network: Network): ValidationError[] {
-  return [
-    ...validateStationIds(line),
-    ...validateTransferRefs(line, network),
-  ]
+  return [...validateStationIds(line), ...validateTransferRefs(line, network)]
 }
 
 /** 校验整个线网数据 */

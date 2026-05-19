@@ -20,6 +20,10 @@ pnpm-debug.log*
 *.swp
 *.swo
 
+# 工具配置目录（Claude Code / Cursor），不纳入版本控制
+.claude/
+.cursor/
+
 # Environment
 .env
 .env.local

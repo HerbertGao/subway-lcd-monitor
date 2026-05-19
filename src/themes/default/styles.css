@@ -7,8 +7,8 @@
   --lcd-future-station: #ffffff;
   --lcd-header-bg: #002850;
   --lcd-header-fg: #ffffff;
-  --lcd-font-station: "Microsoft YaHei", "PingFang SC", sans-serif;
+  --lcd-font-station: 'Microsoft YaHei', 'PingFang SC', sans-serif;
   --lcd-font-station-en: Arial, Helvetica, sans-serif;
-  --lcd-font-info: "Microsoft YaHei", "PingFang SC", sans-serif;
-  --lcd-font-title: "Microsoft YaHei", "PingFang SC", sans-serif;
+  --lcd-font-info: 'Microsoft YaHei', 'PingFang SC', sans-serif;
+  --lcd-font-title: 'Microsoft YaHei', 'PingFang SC', sans-serif;
 }

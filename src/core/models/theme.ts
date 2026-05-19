@@ -48,9 +48,11 @@ export interface Theme {
 
 /** 可部分覆盖的主题（用于主题合并） */
 export type PartialTheme = Partial<Omit<Theme, 'visual' | 'scenes'>> & {
-  visual?: Partial<VisualConfig & {
-    colors?: Partial<ColorConfig>
-    fonts?: Partial<FontConfig>
-  }>
+  visual?: Partial<
+    VisualConfig & {
+      colors?: Partial<ColorConfig>
+      fonts?: Partial<FontConfig>
+    }
+  >
   scenes?: Partial<Record<TrainState, SceneConfig[]>>
 }

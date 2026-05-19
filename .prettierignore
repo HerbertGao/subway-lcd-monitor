@@ -1,0 +1,10 @@
+dist/
+node_modules/
+pnpm-lock.yaml
+openspec/
+*.tsbuildinfo
+
+# 工具配置目录（Claude Code / Cursor / OpenSpec），非项目源码，不纳入格式化范围
+.claude/
+.cursor/
+.agents/

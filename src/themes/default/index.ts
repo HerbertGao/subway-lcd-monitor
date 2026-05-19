@@ -29,16 +29,12 @@ export const defaultTheme: Theme = {
       { id: 'full-route', name: '全线路图', duration: 5 },
       { id: 'nearby', name: '近几站', duration: 5 },
     ],
-    [TrainState.DEPARTING]: [
-      { id: 'nearby', name: '近几站', duration: 5 },
-    ],
+    [TrainState.DEPARTING]: [{ id: 'nearby', name: '近几站', duration: 5 }],
     [TrainState.RUNNING]: [
       { id: 'full-route', name: '全线路图', duration: 5 },
       { id: 'nearby', name: '近几站', duration: 5 },
     ],
-    [TrainState.ARRIVING]: [
-      { id: 'arrival', name: '到站提示', duration: 5 },
-    ],
+    [TrainState.ARRIVING]: [{ id: 'arrival', name: '到站提示', duration: 5 }],
   },
   transition: 'fade',
 }

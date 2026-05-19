@@ -32,9 +32,10 @@ export const useSimulationStore = defineStore('simulation', () => {
     const dir = direction.value
     const last = stations.length - 1
     if (activeLine.value.isLoop) {
-      const next = dir === Direction.FORWARD
-        ? (cur + 1) % stations.length
-        : (cur - 1 + stations.length) % stations.length
+      const next =
+        dir === Direction.FORWARD
+          ? (cur + 1) % stations.length
+          : (cur - 1 + stations.length) % stations.length
       return stations[next]
     }
     if (dir === Direction.FORWARD) {
@@ -47,7 +48,12 @@ export const useSimulationStore = defineStore('simulation', () => {
   let fsm: TrainFSM | null = null
   let rotator: SceneRotator | null = null
 
-  function syncFromFSM(state: { trainState: TrainState; currentStationIndex: number; direction: Direction; isAutoMode: boolean }) {
+  function syncFromFSM(state: {
+    trainState: TrainState
+    currentStationIndex: number
+    direction: Direction
+    isAutoMode: boolean
+  }) {
     trainState.value = state.trainState
     currentStationIndex.value = state.currentStationIndex
     direction.value = state.direction
@@ -55,11 +61,7 @@ export const useSimulationStore = defineStore('simulation', () => {
   }
 
   function updateScenes() {
-    const theme = resolveTheme(
-      defaultTheme,
-      undefined,
-      activeLine.value?.themeId
-    )
+    const theme = resolveTheme(defaultTheme, undefined, activeLine.value?.themeId)
     const scenes = theme.scenes[trainState.value] ?? []
     sceneList.value = scenes
     rotator?.setScenes(scenes)

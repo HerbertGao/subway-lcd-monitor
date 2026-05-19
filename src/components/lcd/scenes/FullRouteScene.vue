@@ -3,8 +3,10 @@
     <svg :viewBox="`0 0 ${svgWidth} ${svgHeight}`" class="full-route__svg">
       <!-- 线路连线 -->
       <line
-        :x1="stationX(0)" :y1="lineY"
-        :x2="stationX(stations.length - 1)" :y2="lineY"
+        :x1="stationX(0)"
+        :y1="lineY"
+        :x2="stationX(stations.length - 1)"
+        :y2="lineY"
         :stroke="lineColor"
         stroke-width="6"
         :stroke-linecap="lineCap"
@@ -13,26 +15,27 @@
       <!-- 已过区间高亮 -->
       <line
         v-if="isForward && currentIndex > 0"
-        :x1="stationX(0)" :y1="lineY"
-        :x2="stationX(currentIndex)" :y2="lineY"
+        :x1="stationX(0)"
+        :y1="lineY"
+        :x2="stationX(currentIndex)"
+        :y2="lineY"
         stroke="var(--lcd-passed-station)"
         stroke-width="6"
         :stroke-linecap="lineCap"
       />
       <line
         v-if="!isForward && currentIndex < stations.length - 1"
-        :x1="stationX(currentIndex)" :y1="lineY"
-        :x2="stationX(stations.length - 1)" :y2="lineY"
+        :x1="stationX(currentIndex)"
+        :y1="lineY"
+        :x2="stationX(stations.length - 1)"
+        :y2="lineY"
         stroke="var(--lcd-passed-station)"
         stroke-width="6"
         :stroke-linecap="lineCap"
       />
 
       <!-- 方向箭头 -->
-      <polygon
-        :points="arrowPoints"
-        :fill="lineColor"
-      />
+      <polygon :points="arrowPoints" :fill="lineColor" />
 
       <!-- 区间箭头 ››› -->
       <polygon
@@ -50,7 +53,8 @@
           v-if="station.transfers.length > 0"
           :x="stationX(i) - 9"
           :y="lineY - 9"
-          width="18" height="18"
+          width="18"
+          height="18"
           rx="3"
           fill="none"
           :stroke="stationColor(i)"
@@ -87,7 +91,8 @@
             :key="transfer.lineId"
             :x="stationX(i) - 16"
             :y="lineY + 20 + ti * 16"
-            width="32" height="14"
+            width="32"
+            height="14"
             rx="7"
             :fill="transfer.lineColor"
           />
@@ -155,13 +160,9 @@ function isHighlight(index: number): boolean {
 function isPassed(index: number): boolean {
   if (isForward.value) {
     // 运行中：出发站也算已过
-    return isRunning.value
-      ? index <= currentIndex.value
-      : index < currentIndex.value
+    return isRunning.value ? index <= currentIndex.value : index < currentIndex.value
   }
-  return isRunning.value
-    ? index >= currentIndex.value
-    : index > currentIndex.value
+  return isRunning.value ? index >= currentIndex.value : index > currentIndex.value
 }
 
 function stationColor(index: number): string {
@@ -188,9 +189,7 @@ const allIntervalChevrons = computed(() => {
     if (gap < 30) continue
 
     // 区间 i→i+1 是否已过
-    const passed = isForward.value
-      ? i + 1 <= currentIndex.value
-      : i >= currentIndex.value
+    const passed = isForward.value ? i + 1 <= currentIndex.value : i >= currentIndex.value
     const color = passed ? 'var(--lcd-passed-station)' : 'var(--lcd-future-station)'
 
     for (let c = 0; c < chevronCount; c++) {

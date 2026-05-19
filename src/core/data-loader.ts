@@ -1,9 +1,9 @@
 import type { Network, Line } from './models/network'
 
-const dataModules = import.meta.glob<Network | Line>(
-  '/src/data/**/*.json',
-  { eager: true, import: 'default' }
-)
+const dataModules = import.meta.glob<Network | Line>('/src/data/**/*.json', {
+  eager: true,
+  import: 'default',
+})
 
 /** 加载指定城市的线网数据 */
 export function loadNetwork(city: string): Network {

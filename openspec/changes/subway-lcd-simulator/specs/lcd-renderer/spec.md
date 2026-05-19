@@ -1,4 +1,4 @@
-## ADDED Requirements
+## 新增需求
 
 ### 需求：LCD 主容器
 

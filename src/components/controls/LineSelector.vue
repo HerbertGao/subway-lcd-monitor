@@ -89,24 +89,35 @@ function startSimulation() {
 }
 
 // 同步 store 中的 direction 到本地选择框（如终点站自动反转）
-watch(() => sim.direction, (dir) => {
-  selectedDirection.value = dir
-})
+watch(
+  () => sim.direction,
+  (dir) => {
+    selectedDirection.value = dir
+  }
+)
 
 // 自动选择第一个城市和线路
-watch(cities, (c) => {
-  if (c.length > 0 && !selectedCity.value) {
-    selectedCity.value = c[0]
-    onCityChange()
-  }
-}, { immediate: true })
+watch(
+  cities,
+  (c) => {
+    if (c.length > 0 && !selectedCity.value) {
+      selectedCity.value = c[0]
+      onCityChange()
+    }
+  },
+  { immediate: true }
+)
 
-watch(availableLines, (lines) => {
-  if (lines.length > 0 && !selectedLineId.value) {
-    selectedLineId.value = lines[0].id
-    onLineChange()
-  }
-}, { immediate: true })
+watch(
+  availableLines,
+  (lines) => {
+    if (lines.length > 0 && !selectedLineId.value) {
+      selectedLineId.value = lines[0].id
+      onLineChange()
+    }
+  },
+  { immediate: true }
+)
 </script>
 
 <style scoped>

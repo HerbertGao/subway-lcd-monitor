@@ -91,9 +91,7 @@ export class TrainFSM {
       return false
     }
     this.state.direction =
-      this.state.direction === Direction.FORWARD
-        ? Direction.BACKWARD
-        : Direction.FORWARD
+      this.state.direction === Direction.FORWARD ? Direction.BACKWARD : Direction.FORWARD
     this.callbacks.onDirectionChange?.(this.getState())
     return true
   }
@@ -164,9 +162,12 @@ export class TrainFSM {
     if (this.line.isLoop) {
       // 环线：循环
       if (this.state.direction === Direction.FORWARD) {
-        this.state.currentStationIndex = (this.state.currentStationIndex + 1) % this.line.stations.length
+        this.state.currentStationIndex =
+          (this.state.currentStationIndex + 1) % this.line.stations.length
       } else {
-        this.state.currentStationIndex = (this.state.currentStationIndex - 1 + this.line.stations.length) % this.line.stations.length
+        this.state.currentStationIndex =
+          (this.state.currentStationIndex - 1 + this.line.stations.length) %
+          this.line.stations.length
       }
     } else {
       // 非环线

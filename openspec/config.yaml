@@ -2,19 +2,47 @@ schema: spec-driven
 
 # 项目上下文（可选）
 # 在创建工件时向 AI 显示此信息。
-# 添加您的技术栈、约定、风格指南、领域知识等。
-# 示例：
-#   context: |
-#     技术栈：TypeScript, React, Node.js
-#     我们使用约定式提交
-#     领域：电商平台
+context: |
+  项目：地铁 LCD 报站显示屏模拟器（subway-lcd-monitor）
+  目标：在 Web 上模拟地铁车厢 LCD 报站屏，随列车运行状态轮播线路图、
+        附近站点、到站提示等画面。
+
+  技术栈：Vue 3（Composition API）+ TypeScript（strict）+ Vite + Pinia，
+          pnpm 管理依赖；纯 CSS + SVG 渲染，不使用第三方 UI 组件库。
+
+  架构（三层，严格解耦）：
+    - 数据层 src/data/：静态 JSON 描述地铁线网
+    - 核心逻辑层 src/core/：纯 TypeScript，含状态机、数据加载、主题解析；
+      运行时不依赖 Vue（可有 type-only 类型 import，如 theme 模型引用
+      Vue Component 类型，编译后擦除，不产生运行时依赖）
+    - 渲染层 src/components/ + src/composables/：Vue 组件与 CSS
+
+  核心模型：
+    - 双状态机——TrainFSM 驱动列车 STOPPED→DEPARTING→RUNNING→ARRIVING 循环；
+      SceneRotator 按列车状态轮播 LCD 画面
+    - 主题按「线路级 > 城市级 > 默认级」优先级合并，经 CSS 变量注入
+
+  约定：
+    - TypeScript strict 模式，路径别名 @/* → src/*
+    - 中文为主要文档与注释语言
+    - 核心逻辑（状态机、解析器）应可脱离 Vue 单独测试
+
+  领域：地铁 / 城市轨道交通车站报站屏。
 
 # 每个工件的规则（可选）
 # 为特定工件添加自定义规则。
-# 示例：
-#   rules:
-#     proposal:
-#       - 保持提案在500字以内
-#       - 始终包含"非目标"部分
-#     tasks:
-#       - 将任务分解为最多2小时的块
+rules:
+  proposal:
+    - 用中文撰写
+    - 明确说明影响哪一层（数据层 / 核心逻辑层 / 渲染层）
+    - 始终包含"非目标"部分，避免范围蔓延
+  design:
+    - 用中文撰写
+    - 涉及状态机改动时，画出状态与转移；说明对 TrainFSM / SceneRotator 的影响
+    - 核心逻辑层（src/core/）运行时不依赖 Vue（type-only 类型 import 可接受）
+  tasks:
+    - 将任务分解为最多 2 小时的块
+    - 按层分组任务（数据 / 核心逻辑 / 渲染），核心逻辑任务应可脱离 Vue 验证
+  spec:
+    - 用中文撰写
+    - 需求使用 必须 / 禁止 / 应当 等规范化措辞（等价于 SHALL / MUST / SHOULD）

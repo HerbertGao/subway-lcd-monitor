@@ -4,9 +4,7 @@
       <span class="lcd-screen__line-name" :style="{ color: activeLine?.color }">
         {{ activeLine?.name }}
       </span>
-      <span class="lcd-screen__direction">
-        往 {{ directionLabel }} 方向
-      </span>
+      <span class="lcd-screen__direction"> 往 {{ directionLabel }} 方向 </span>
     </div>
     <div class="lcd-screen__content">
       <Transition :name="transitionName" mode="out-in">
@@ -43,8 +41,8 @@ const transitionName = computed(() => `lcd-${currentTheme.value.transition}`)
 
 const sceneComponentMap: Record<string, Component> = {
   'full-route': FullRouteScene,
-  'nearby': NearbyScene,
-  'arrival': ArrivalScene,
+  nearby: NearbyScene,
+  arrival: ArrivalScene,
 }
 
 const currentSceneComponent = computed(() => {
