@@ -105,20 +105,34 @@ export function useRouteLayout(opts: RouteLayoutOptions) {
     return segments
   })
 
-  /** 行进方向箭头（落在当前站处，无当前站则不渲染） */
+  /**
+   * 行进方向箭头：定位在「最后一个已过站与下一站之间」的线路段中部。
+   *
+   * 取下一站（`sim.nextStation`）在本场景可见序列中的索引，与其相邻的已过站
+   * 构成区间，箭头落在两站 `stationX` 的中点附近、实心三角指向行进方向。
+   * 下一站不在可见范围（或无下一站）时不渲染。
+   */
   const directionArrow = computed(() => {
-    const cur = currentIndex.value
-    if (cur < 0) return null
-    const cx = stationX(cur)
-    const h = opts.dotRadius * 1.4
-    const w = opts.dotRadius * 1.6
+    const stations = opts.stations.value
+    const nextId = sim.nextStation?.id
+    if (!nextId) return null
+    const nextIdx = stations.findIndex((s) => s.id === nextId)
+    if (nextIdx < 0) return null
+    // 最后一个已过站：行进方向上紧邻下一站的前一站
+    const passedIdx = isForward.value ? nextIdx - 1 : nextIdx + 1
+    if (passedIdx < 0 || passedIdx > stations.length - 1) return null
+    const mid = (stationX(passedIdx) + stationX(nextIdx)) / 2
+    // 箭头尺寸与站点圆点直径（2×dotRadius）相近、不大于圆点：
+    // 总高 = 2h ≈ 1.4×dotRadius，总宽 = w ≈ 1.0×dotRadius。
+    const h = opts.dotRadius * 0.7
+    const w = opts.dotRadius * 1.0
     if (isForward.value) {
-      // 向右箭头，紧贴当前站右侧
-      const base = cx + opts.dotRadius + 2
+      // 向右箭头，置于区间线段中部
+      const base = mid - w / 2
       return `${base},${opts.lineY - h} ${base},${opts.lineY + h} ${base + w},${opts.lineY}`
     }
-    // 向左箭头，紧贴当前站左侧
-    const base = cx - opts.dotRadius - 2
+    // 向左箭头，置于区间线段中部
+    const base = mid + w / 2
     return `${base},${opts.lineY - h} ${base},${opts.lineY + h} ${base - w},${opts.lineY}`
   })
 

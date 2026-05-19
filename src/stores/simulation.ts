@@ -62,7 +62,7 @@ export const useSimulationStore = defineStore('simulation', () => {
 
   function updateScenes() {
     const theme = resolveTheme(defaultTheme, undefined, activeLine.value?.themeId)
-    const scenes = theme.scenes[trainState.value] ?? []
+    const scenes: SceneConfig[] = theme.scenes[trainState.value] ?? []
     sceneList.value = scenes
     rotator?.setScenes(scenes)
   }

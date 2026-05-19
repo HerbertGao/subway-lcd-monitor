@@ -37,6 +37,7 @@ export function useTheme() {
       el.style.setProperty('--lcd-station-dot-upcoming', colors.stationDotUpcoming)
       el.style.setProperty('--lcd-door-hint-green', colors.doorHintGreen)
       el.style.setProperty('--lcd-door-hint-text', colors.doorHintText)
+      el.style.setProperty('--lcd-direction-arrow', colors.directionArrow)
       el.style.setProperty('--lcd-font-station', fonts.stationName)
       el.style.setProperty('--lcd-font-station-en', fonts.stationNameEn)
       el.style.setProperty('--lcd-font-info', fonts.info)

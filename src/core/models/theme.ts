@@ -31,10 +31,12 @@ export interface ColorConfig {
   stationDot: string
   /** 未过站站点圆点填充色（黄色实心） */
   stationDotUpcoming: string
-  /** 开门方向提示绿底色（港铁式右上角开门方向提示「绿底白字」态背景） */
+  /** 开门方向提示绿底色（港铁式右上角开门方向提示「绿底黑字」态背景） */
   doorHintGreen: string
-  /** 开门方向提示绿底态文字色（与 doorHintGreen 成对的「白字」） */
+  /** 开门方向提示绿底态文字色（与 doorHintGreen 成对的「黑字」） */
   doorHintText: string
+  /** 线路图行进方向箭头闪烁的绿色态填充色（港铁专用配色） */
+  directionArrow: string
 }
 
 /** 字体配置 */

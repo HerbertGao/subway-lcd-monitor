@@ -22,7 +22,8 @@ export const defaultTheme: Theme = {
       stationDot: '#ffffff',
       stationDotUpcoming: '#f2b600',
       doorHintGreen: '#00a040',
-      doorHintText: '#ffffff',
+      doorHintText: '#1a1a1a',
+      directionArrow: '#00a040',
     },
     fonts: {
       stationName: '"Microsoft YaHei", "PingFang SC", sans-serif',

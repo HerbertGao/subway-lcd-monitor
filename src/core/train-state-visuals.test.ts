@@ -2,11 +2,14 @@ import { describe, it, expect } from 'vitest'
 import { TrainState } from './models/train'
 import {
   SAFETY_BAR_TEXT,
+  SAFETY_BAR_HAS_ICON,
   INFO_BAR_MESSAGES,
   getSafetyBarText,
+  safetyBarHasIcon,
   getDisplayedArrivalStation,
   getDoorHint,
   getStationDotState,
+  getTransferHintText,
 } from './train-state-visuals'
 
 describe('train-state-visuals', () => {
@@ -33,6 +36,30 @@ describe('train-state-visuals', () => {
       for (const state of Object.values(TrainState)) {
         expect(getSafetyBarText(state).length).toBeGreaterThan(0)
         expect(SAFETY_BAR_TEXT[state].length).toBeGreaterThan(0)
+      }
+    })
+  })
+
+  describe('safetyBarHasIcon - 黄条是否带警示图标', () => {
+    it('STOPPED（請小心空隙类）带图标', () => {
+      expect(safetyBarHasIcon(TrainState.STOPPED)).toBe(true)
+    })
+
+    it('ARRIVING（請小心空隙类）带图标', () => {
+      expect(safetyBarHasIcon(TrainState.ARRIVING)).toBe(true)
+    })
+
+    it('DEPARTING（請勿靠近車門类）不带图标', () => {
+      expect(safetyBarHasIcon(TrainState.DEPARTING)).toBe(false)
+    })
+
+    it('RUNNING 兜底与請小心空隙同类、带图标', () => {
+      expect(safetyBarHasIcon(TrainState.RUNNING)).toBe(true)
+    })
+
+    it('四个 TrainState 在 SAFETY_BAR_HAS_ICON 中均有布尔值', () => {
+      for (const state of Object.values(TrainState)) {
+        expect(typeof SAFETY_BAR_HAS_ICON[state]).toBe('boolean')
       }
     })
   })
@@ -64,23 +91,26 @@ describe('train-state-visuals', () => {
   })
 
   describe('getDoorHint - 开门方向提示', () => {
-    it('right → 绿底白字「請在這邊落車」', () => {
+    it('right → 绿底黑字「請在這邊落車」（中英双语两段）', () => {
       expect(getDoorHint('right')).toEqual({
-        text: '請在這邊落車　Please exit this side',
+        zh: '請在這邊落車',
+        en: 'Please exit this side',
         variant: 'green',
       })
     })
 
-    it('left → 深色字「請往另一邊落車」', () => {
+    it('left → 深色字「請往另一邊落車」（中英双语两段）', () => {
       expect(getDoorHint('left')).toEqual({
-        text: '請往另一邊落車　Please exit from the opposite side',
+        zh: '請往另一邊落車',
+        en: 'Please exit from the opposite side',
         variant: 'dark',
       })
     })
 
-    it('both → 绿底白字「兩邊車門都會開」', () => {
+    it('both → 绿底黑字「兩邊車門都會開」（中英双语两段）', () => {
       expect(getDoorHint('both')).toEqual({
-        text: '兩邊車門都會開　Doors open on both sides',
+        zh: '兩邊車門都會開',
+        en: 'Doors open on both sides',
         variant: 'green',
       })
     })
@@ -88,6 +118,27 @@ describe('train-state-visuals', () => {
     it('空值 → 不显示（null）', () => {
       expect(getDoorHint(null)).toBeNull()
       expect(getDoorHint(undefined)).toBeNull()
+    })
+  })
+
+  describe('getTransferHintText - 全程线路图换乘蓝条文案', () => {
+    it('换乘线路为空 → 兜底通用换乘提示', () => {
+      expect(getTransferHintText([])).toBe('請在此站換乘　Change here for connecting lines')
+    })
+
+    it('单条换乘线路 → 含该线中英文名', () => {
+      const text = getTransferHintText([{ name: '房山线', nameEn: 'Fangshan Line' }])
+      expect(text).toBe('往房山线各站，請在此站換乘　Change to Fangshan Line')
+    })
+
+    it('多条换乘线路 → 中文以「、」连接、英文以「 / 」连接', () => {
+      const text = getTransferHintText([
+        { name: '房山线', nameEn: 'Fangshan Line' },
+        { name: '燕房线', nameEn: 'Yanfang Line' },
+      ])
+      expect(text).toBe(
+        '往房山线、燕房线各站，請在此站換乘　Change to Fangshan Line / Yanfang Line'
+      )
     })
   })
 

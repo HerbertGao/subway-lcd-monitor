@@ -60,9 +60,15 @@
           </template>
         </g>
 
-        <!-- 标记层：当前站处行进方向箭头 -->
+        <!-- 标记层：区间线段中部行进方向箭头，与下一站圆点同步闪烁 -->
         <g class="layer-mark">
-          <polygon v-if="directionArrow" :points="directionArrow" fill="var(--lcd-fg)" />
+          <polygon
+            v-if="directionArrow"
+            class="direction-arrow"
+            :points="directionArrow"
+            stroke="var(--lcd-fg)"
+            stroke-width="1.5"
+          />
         </g>
 
         <!-- 文字层：站名中文（上）/ 英文（下），已过站名转灰；字号按站间距自适应 -->
@@ -107,6 +113,40 @@
             </text>
           </g>
         </g>
+
+        <!-- 换乘标签层：transfers 非空的站在圆点下方渲染换乘线路名牌 -->
+        <g class="layer-transfer">
+          <template v-for="(station, i) in visibleStations" :key="'tf-' + station.id">
+            <g
+              v-for="plate in transferPlates(station)"
+              :key="'tf-' + station.id + '-' + plate.lineId"
+            >
+              <rect
+                :x="stationX(i) - plate.width / 2"
+                :y="plate.y"
+                :width="plate.width"
+                :height="plate.height"
+                :rx="plate.height / 2"
+                :fill="plate.color"
+                :stroke="plate.color"
+                stroke-width="1"
+              />
+              <text
+                :x="stationX(i)"
+                :y="plate.y + plate.height / 2"
+                text-anchor="middle"
+                dominant-baseline="central"
+                fill="#ffffff"
+                :font-size="plate.fontSize"
+                font-family="var(--lcd-font-station)"
+                :textLength="plate.needsCompression ? plate.textWidth : undefined"
+                :lengthAdjust="plate.needsCompression ? 'spacingAndGlyphs' : undefined"
+              >
+                {{ plate.lineName }}
+              </text>
+            </g>
+          </template>
+        </g>
       </svg>
     </div>
 
@@ -122,7 +162,7 @@ import { useTheme } from '@/composables/useTheme'
 import { Direction } from '@/core/models/train'
 import { INFO_BAR_MESSAGES } from '@/core/train-state-visuals'
 import { useRouteLayout } from './useRouteLayout'
-import { fitStationLabel } from './stationLabelFit'
+import { fitStationLabel, estimateTextWidth } from './stationLabelFit'
 import type { Station } from '@/core/models/network'
 
 const sim = useSimulationStore()
@@ -191,6 +231,40 @@ function nameFit(i: number, station: Station) {
 function nameEnFit(i: number, station: Station) {
   const base = i === currentVisibleIndex.value ? BASE_NAME_EN_FONT_CURRENT : BASE_NAME_EN_FONT
   return fitStationLabel(station.nameEn, base, stationGap.value)
+}
+
+// 换乘名牌：近段图字号更大，与全程线路图版式一致
+const BASE_TRANSFER_FONT = 14
+const TRANSFER_PAD_X = 8
+const TRANSFER_PLATE_HEIGHT = 20
+const TRANSFER_PLATE_GAP = 4
+const TRANSFER_TOP_OFFSET = 16
+
+/**
+ * 计算某站换乘名牌的渲染布局，与全程线路图版式一致。
+ * transfers 非空时每个换乘项生成一枚名牌，颜色 / 文案取自 transfers 数据；
+ * 文字字号复用 fitStationLabel 受站间距约束，名牌宽度据适配后文字宽度自适应；
+ * 多个换乘项纵向叠放在圆点下方。
+ */
+function transferPlates(station: Station) {
+  return station.transfers.map((tf, ti) => {
+    const fit = fitStationLabel(tf.lineName, BASE_TRANSFER_FONT, stationGap.value)
+    const textWidth = fit.needsCompression
+      ? fit.availableWidth
+      : estimateTextWidth(tf.lineName, fit.fontSize)
+    const width = Math.min(textWidth + TRANSFER_PAD_X * 2, stationGap.value * 0.95)
+    return {
+      lineId: tf.lineId,
+      lineName: tf.lineName,
+      color: tf.lineColor,
+      fontSize: fit.fontSize,
+      needsCompression: fit.needsCompression,
+      textWidth,
+      width,
+      height: TRANSFER_PLATE_HEIGHT,
+      y: lineY + TRANSFER_TOP_OFFSET + ti * (TRANSFER_PLATE_HEIGHT + TRANSFER_PLATE_GAP),
+    }
+  })
 }
 
 // 提示条层：取自集中维护的港铁式提示语集（src/core/train-state-visuals.ts）
@@ -266,6 +340,32 @@ const a11yDesc = computed(() => {
   /* 回到黄实心态，保证循环无缝 */
   100% {
     fill: var(--lcd-station-dot-upcoming);
+  }
+}
+
+/*
+ * 行进方向箭头闪烁：与下一站圆点 station-dot-flash 严格同相
+ * （同 2s 周期、steps(1) 硬切、0%/50%/100% 相位一致）。
+ * fill 在「绿实心」与「白实心」两态交替——绿态对应圆点黄态、白态对应圆点白态；
+ * stroke 恒为深色、不随相位改变。
+ */
+.direction-arrow {
+  stroke: var(--lcd-fg);
+  animation: direction-arrow-flash 2s steps(1, end) infinite;
+}
+
+@keyframes direction-arrow-flash {
+  /* 绿实心态（对应下一站圆点黄态） */
+  0% {
+    fill: var(--lcd-direction-arrow);
+  }
+  /* 白实心态（对应下一站圆点白态） */
+  50% {
+    fill: var(--lcd-station-dot);
+  }
+  /* 回到绿实心态，保证循环无缝 */
+  100% {
+    fill: var(--lcd-direction-arrow);
   }
 }
 </style>

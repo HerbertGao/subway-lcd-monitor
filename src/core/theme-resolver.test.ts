@@ -29,6 +29,7 @@ function makeDefaultTheme(): Theme {
         stationDotUpcoming: '#f2b600',
         doorHintGreen: '#00a040',
         doorHintText: '#ffffff',
+        directionArrow: '#00a040',
       },
       fonts: {
         stationName: 'FontA',
