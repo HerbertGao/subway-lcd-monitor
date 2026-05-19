@@ -1,6 +1,7 @@
 import { computed, type ComputedRef } from 'vue'
 import type { Station } from '@/core/models/network'
 import { Direction, TrainState } from '@/core/models/train'
+import { getStationDotState, type StationDotState } from '@/core/train-state-visuals'
 import { useSimulationStore } from '@/stores/simulation'
 
 /**
@@ -58,6 +59,25 @@ export function useRouteLayout(opts: RouteLayoutOptions) {
     return isRunning.value ? visibleIndex >= cur : visibleIndex > cur
   }
 
+  /**
+   * 判定某站点圆点的状态（已过 / 未过 / 下一站）。
+   *
+   * 复用 `src/core/train-state-visuals.ts` 的纯映射 `getStationDotState`：
+   * - `next`：该站为列车正驶向的下一站（`id === simulation.nextStation?.id`）
+   * - `passed`：已过站（沿用 `isPassed` 判定）
+   * - `upcoming`：其余未过站
+   *
+   * 「下一站」优先于「已过」判定（见纯映射约定）。组件据此着色，
+   * 其中 `next` 态应用闪烁动画。
+   *
+   * @param visibleIndex 站点在本场景 stations 序列中的索引
+   * @param station 站点对象（用于与 `nextStation` 比对 id）
+   */
+  function dotState(visibleIndex: number, station: Station): StationDotState {
+    const isNext = sim.nextStation?.id === station.id
+    return getStationDotState(isPassed(visibleIndex), isNext)
+  }
+
   /** 当前站索引（即灰 / 未过色的分界点，行进方向箭头落点） */
   const currentIndex = computed(() => opts.currentVisibleIndex.value)
 
@@ -106,6 +126,7 @@ export function useRouteLayout(opts: RouteLayoutOptions) {
     isForward,
     stationX,
     isPassed,
+    dotState,
     lineSegments,
     directionArrow,
   }

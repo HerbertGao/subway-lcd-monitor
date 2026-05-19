@@ -20,6 +20,9 @@ export const defaultTheme: Theme = {
       infoBar: '#13315c',
       infoBarText: '#ffffff',
       stationDot: '#ffffff',
+      stationDotUpcoming: '#f2b600',
+      doorHintGreen: '#00a040',
+      doorHintText: '#ffffff',
     },
     fonts: {
       stationName: '"Microsoft YaHei", "PingFang SC", sans-serif',
@@ -31,14 +34,14 @@ export const defaultTheme: Theme = {
     lineCap: 'round',
   },
   scenes: {
-    [TrainState.STOPPED]: [
-      { id: 'full-route', name: '全线路图', duration: 5 },
-      { id: 'nearby', name: '近几站', duration: 5 },
-    ],
-    [TrainState.DEPARTING]: [{ id: 'nearby', name: '近几站', duration: 5 }],
+    // 停站/关门/到站显示站名特写（arrival 为列表唯一项、必然渲染），
+    // 运行中显示线路图。RUNNING 的两个线路图场景 duration 约 2.5s，
+    // 使 FSM RUNNING 自动时长 5s 内 full-route 与 nearby 均可轮到。
+    [TrainState.STOPPED]: [{ id: 'arrival', name: '到站提示', duration: 5 }],
+    [TrainState.DEPARTING]: [{ id: 'arrival', name: '到站提示', duration: 5 }],
     [TrainState.RUNNING]: [
-      { id: 'full-route', name: '全线路图', duration: 5 },
-      { id: 'nearby', name: '近几站', duration: 5 },
+      { id: 'full-route', name: '全线路图', duration: 2.5 },
+      { id: 'nearby', name: '近几站', duration: 2.5 },
     ],
     [TrainState.ARRIVING]: [{ id: 'arrival', name: '到站提示', duration: 5 }],
   },

@@ -26,6 +26,9 @@ function makeDefaultTheme(): Theme {
         infoBar: '#13315c',
         infoBarText: '#ffffff',
         stationDot: '#ffffff',
+        stationDotUpcoming: '#f2b600',
+        doorHintGreen: '#00a040',
+        doorHintText: '#ffffff',
       },
       fonts: {
         stationName: 'FontA',

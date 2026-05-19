@@ -29,6 +29,12 @@ export interface ColorConfig {
   infoBarText: string
   /** 站点圆点填充色（白色实心） */
   stationDot: string
+  /** 未过站站点圆点填充色（黄色实心） */
+  stationDotUpcoming: string
+  /** 开门方向提示绿底色（港铁式右上角开门方向提示「绿底白字」态背景） */
+  doorHintGreen: string
+  /** 开门方向提示绿底态文字色（与 doorHintGreen 成对的「白字」） */
+  doorHintText: string
 }
 
 /** 字体配置 */

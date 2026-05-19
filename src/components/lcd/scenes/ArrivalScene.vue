@@ -1,14 +1,26 @@
 <template>
   <!-- 背景层：浅灰屏底（.arrival 容器底色） -->
   <div class="arrival" role="img" :aria-label="a11yLabel">
-    <!-- 上半浅灰区：文字层 + 站点圆点层横排 -->
+    <!-- 上半浅灰区：开门方向层 + 文字层 + 站点圆点层 -->
     <div class="arrival__stage">
-      <!-- 文字层：超大中文站名 -->
-      <div class="arrival__name">{{ station?.name }}</div>
-      <!-- 站点圆点层：白色实心圆点 -->
-      <div class="arrival__dot" aria-hidden="true"></div>
-      <!-- 文字层：英文站名 -->
-      <div class="arrival__name-en">{{ station?.nameEn }}</div>
+      <!-- 开门方向层：右上角港铁式开门方向提示；数据缺失时不渲染 -->
+      <div
+        v-if="doorHint"
+        class="arrival__door-hint"
+        :class="`arrival__door-hint--${doorHint.variant}`"
+        aria-hidden="true"
+      >
+        {{ doorHint.text }}
+      </div>
+      <!-- 文字层 + 圆点层：超大中文站名 / 白色实心圆点 / 英文站名横排 -->
+      <div class="arrival__row">
+        <!-- 文字层：超大中文站名 -->
+        <div class="arrival__name">{{ station?.name }}</div>
+        <!-- 站点圆点层：白色实心圆点 -->
+        <div class="arrival__dot" aria-hidden="true"></div>
+        <!-- 文字层：英文站名 -->
+        <div class="arrival__name-en">{{ station?.nameEn }}</div>
+      </div>
     </div>
 
     <!-- 黄条层：下半黄色安全条 -->
@@ -21,18 +33,31 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useSimulationStore } from '@/stores/simulation'
+import {
+  getDisplayedArrivalStation,
+  getSafetyBarText,
+  getDoorHint,
+} from '@/core/train-state-visuals'
 
 const sim = useSimulationStore()
 
-const station = computed(() => sim.nextStation)
+// 展示站：按列车运行状态取（ARRIVING→nextStation、STOPPED/DEPARTING→currentStation、
+// RUNNING→null）。站名、圆点、黄条、开门方向共用此展示站。复用 train-state-visuals 纯映射。
+const station = computed(() =>
+  getDisplayedArrivalStation(sim.trainState, sim.currentStation, sim.nextStation)
+)
 
-// 黄条层：本期固定占位文案（状态化文案属期二）
-const safetyBarText = '請小心空隙 Please mind the gap'
+// 黄条层：文案按当前 TrainState 取自集中维护的映射，不在组件硬编码。
+const safetyBarText = computed(() => getSafetyBarText(sim.trainState))
+
+// 开门方向层：按展示站 doorSide 取提示（{text, variant} 或 null）；
+// null 时不渲染该图层（数据缺失 fallback）。映射约定见 getDoorHint 注释。
+const doorHint = computed(() => getDoorHint(station.value?.doorSide))
 
 const a11yLabel = computed(() => {
   const name = station.value?.name ?? '未知站点'
   const nameEn = station.value?.nameEn ?? ''
-  return `到站提示，下一站 ${name} ${nameEn}`
+  return `到站提示，${name} ${nameEn}`
 })
 </script>
 
@@ -46,9 +71,19 @@ const a11yLabel = computed(() => {
   background: var(--lcd-bg);
 }
 
-/* 上半浅灰区：中文站名 + 圆点 + 英文站名横向排布 */
+/* 上半浅灰区：开门方向层（绝对定位右上角）+ 站名行 */
 .arrival__stage {
+  position: relative;
   flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(4px, 3vw, 16px);
+  min-width: 0;
+}
+
+/* 站名行：中文站名 + 圆点 + 英文站名横向排布 */
+.arrival__row {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -56,8 +91,36 @@ const a11yLabel = computed(() => {
   gap: clamp(8px, 2.5vw, 28px);
   /* clamp 下限经下调，使极窄屏（320/375px）下「站名行 + 黄条」最坏排版
      可放入 LcdScreen min-height 约束下的内容区，scrollHeight ≤ clientHeight、不被裁剪。 */
-  padding: clamp(4px, 3vw, 16px);
   min-width: 0;
+}
+
+/* 开门方向层：右上角港铁式开门方向提示（装饰性，参考港铁帧） */
+.arrival__door-hint {
+  position: absolute;
+  top: clamp(4px, 2vw, 14px);
+  right: clamp(4px, 2vw, 14px);
+  /* max-width 限制使长英文提示在窄屏内换行而非把站名挤出视口 */
+  max-width: 45%;
+  box-sizing: border-box;
+  font-family: var(--lcd-font-station);
+  font-weight: bold;
+  font-size: clamp(8px, 2vw, 15px);
+  line-height: 1.15;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+/* 绿底白字态（doorSide right / both） */
+.arrival__door-hint--green {
+  background: var(--lcd-door-hint-green);
+  color: var(--lcd-door-hint-text);
+  padding: clamp(2px, 0.8vw, 6px) clamp(4px, 1.6vw, 12px);
+  border-radius: 999px;
+}
+
+/* 深色字态（doorSide left，无绿底） */
+.arrival__door-hint--dark {
+  color: var(--lcd-fg);
 }
 
 /* 文字层：超大中文站名 */
