@@ -28,6 +28,13 @@ onUnmounted(() => {
 </script>
 
 <style>
+:root {
+  /* 页面外壳背景：与浅色港铁 LCD 屏协调的中性深灰。
+     属应用外壳、不属 LCD 屏主题范畴，故不纳入主题系统 ColorConfig；
+     在此集中以单一 CSS 变量承载，避免色值散落硬编码于多个组件。 */
+  --app-shell-bg: #26272b;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -36,7 +43,7 @@ onUnmounted(() => {
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background: #1a1a2e;
+  background: var(--app-shell-bg);
   color: #eee;
   min-height: 100vh;
 }

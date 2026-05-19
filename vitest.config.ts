@@ -9,6 +9,10 @@ export default defineConfig({
   },
   test: {
     environment: 'node',
-    include: ['src/core/**/*.test.ts', 'src/stores/**/*.test.ts'],
+    include: [
+      'src/core/**/*.test.ts',
+      'src/stores/**/*.test.ts',
+      'src/components/**/*.test.ts',
+    ],
   },
 })

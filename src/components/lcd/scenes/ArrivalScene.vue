@@ -16,8 +16,12 @@
       <div class="arrival__row">
         <!-- 文字层：超大中文站名 -->
         <div class="arrival__name">{{ station?.name }}</div>
-        <!-- 站点圆点层：白色实心圆点 -->
-        <div class="arrival__dot" aria-hidden="true"></div>
+        <!-- 站点圆点层：ARRIVING 时闪烁黄↔白实心，STOPPED/DEPARTING 时静态白实心 -->
+        <div
+          class="arrival__dot"
+          :class="{ 'arrival__dot--flashing': isArriving }"
+          aria-hidden="true"
+        ></div>
         <!-- 文字层：英文站名 -->
         <div class="arrival__name-en">{{ station?.nameEn }}</div>
       </div>
@@ -33,6 +37,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useSimulationStore } from '@/stores/simulation'
+import { TrainState } from '@/core/models/train'
 import {
   getDisplayedArrivalStation,
   getSafetyBarText,
@@ -40,6 +45,10 @@ import {
 } from '@/core/train-state-visuals'
 
 const sim = useSimulationStore()
+
+// 圆点闪烁判定：ARRIVING 时展示站即正驶向的下一站（getDisplayedArrivalStation
+// 已保证此映射），圆点须与线路图下一站圆点同规律闪烁；其余状态静态白实心。
+const isArriving = computed(() => sim.trainState === TrainState.ARRIVING)
 
 // 展示站：按列车运行状态取（ARRIVING→nextStation、STOPPED/DEPARTING→currentStation、
 // RUNNING→null）。站名、圆点、黄条、开门方向共用此展示站。复用 train-state-visuals 纯映射。
@@ -137,7 +146,7 @@ const a11yLabel = computed(() => {
   text-align: center;
 }
 
-/* 站点圆点层：白色实心圆点 + 深色描边 */
+/* 站点圆点层：静态态为白色实心圆点 + 深色描边 */
 .arrival__dot {
   flex: 0 0 auto;
   width: clamp(20px, 6vw, 52px);
@@ -146,6 +155,30 @@ const a11yLabel = computed(() => {
   background: var(--lcd-station-dot);
   border: clamp(2px, 0.6vw, 4px) solid var(--lcd-fg);
   box-sizing: border-box;
+}
+
+/*
+ * ARRIVING 态：圆点在「白实心」与「黄实心」两态间硬切闪烁（steps 跳变、非渐变），
+ * 周期 2s，与线路图下一站圆点（FullRouteScene 的 station-dot-flash）一致。
+ * border 由 .arrival__dot 提供、恒为 var(--lcd-fg) 深色，闪烁全程不变。
+ */
+.arrival__dot--flashing {
+  animation: arrival-dot-flash 2s steps(1, end) infinite;
+}
+
+@keyframes arrival-dot-flash {
+  /* 白实心态 */
+  0% {
+    background: var(--lcd-station-dot);
+  }
+  /* 黄实心态 */
+  50% {
+    background: var(--lcd-station-dot-upcoming);
+  }
+  /* 回到白实心态，保证循环无缝 */
+  100% {
+    background: var(--lcd-station-dot);
+  }
 }
 
 /* 文字层：英文站名 */

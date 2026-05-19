@@ -1,6 +1,6 @@
 <template>
   <div ref="screenRef" class="lcd-screen">
-    <Transition :name="transitionName" mode="out-in">
+    <Transition :name="transitionName">
       <component :is="currentSceneComponent" :key="currentScene?.id" />
     </Transition>
   </div>
@@ -67,14 +67,26 @@ const currentSceneComponent = computed(() => {
   min-height: 160px;
   display: flex;
   overflow: hidden;
+  /* 场景根元素绝对定位（见下）的定位上下文。
+     cross-fade 期间新旧两个场景同时挂载、各自 inset:0 叠放在此元素内。 */
+  position: relative;
 }
 
-/* 场景 Transition 渲染的场景组件占满整个 LCD 屏（整屏场景容器，无独立 header/footer） */
+/* 场景 Transition 渲染的场景组件占满整个 LCD 屏（整屏场景容器，无独立 header/footer）。
+   绝对定位 + inset:0 撑满 .lcd-screen（与原 flex:1 等效填满），
+   使过渡期新旧场景叠放 cross-fade，而非作为 flex 兄弟并排闪现。 */
 .lcd-screen > :deep(*) {
-  flex: 1;
+  position: absolute;
+  inset: 0;
   min-width: 0;
 }
+</style>
 
+<!-- 场景切换过渡样式必须为非 scoped：<Transition> 把过渡 class 加在
+     <component :is> 动态渲染的子场景根元素上，该元素只带子组件自己的
+     scoped 属性、不带 LcdScreen 的 data-v 属性，故 scoped 选择器
+     （.lcd-fade-*[data-v-x]）无法命中、过渡 CSS 完全失效。 -->
+<style>
 /* Fade transition */
 .lcd-fade-enter-active,
 .lcd-fade-leave-active {

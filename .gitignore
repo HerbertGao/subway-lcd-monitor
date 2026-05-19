@@ -46,6 +46,7 @@ $RECYCLE.BIN/
 
 # Coverage & testing
 /coverage
+.playwright-mcp/
 
 # Misc
 *.local

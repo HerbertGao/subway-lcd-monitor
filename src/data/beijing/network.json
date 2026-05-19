@@ -2,5 +2,5 @@
   "city": "北京",
   "cityEn": "Beijing",
   "defaultThemeId": "default",
-  "lines": ["line-yanfang"]
+  "lines": ["line-yanfang", "line-fangshan"]
 }

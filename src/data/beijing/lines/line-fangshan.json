@@ -1,0 +1,127 @@
+{
+  "id": "line-fangshan",
+  "name": "房山线",
+  "nameEn": "Fangshan Line",
+  "color": "#E66032",
+  "isLoop": false,
+  "stations": [
+    {
+      "id": "dongguantounan",
+      "name": "东管头南",
+      "nameEn": "Dongguantounan",
+      "transfers": [],
+      "doorSide": "right"
+    },
+    {
+      "id": "shoujingmao",
+      "name": "首经贸",
+      "nameEn": "Shoujingmao",
+      "transfers": [],
+      "doorSide": "left"
+    },
+    {
+      "id": "huaxiangdongqiao",
+      "name": "花乡东桥",
+      "nameEn": "Huaxiangdongqiao",
+      "transfers": [],
+      "doorSide": "right"
+    },
+    {
+      "id": "baipenyao",
+      "name": "白盆窑",
+      "nameEn": "Baipenyao",
+      "transfers": [],
+      "doorSide": "right"
+    },
+    {
+      "id": "guogongzhuang",
+      "name": "郭公庄",
+      "nameEn": "Guogongzhuang",
+      "transfers": [],
+      "doorSide": "left"
+    },
+    {
+      "id": "dabaotai",
+      "name": "大葆台",
+      "nameEn": "Dabaotai",
+      "transfers": [],
+      "doorSide": "right"
+    },
+    {
+      "id": "daotian",
+      "name": "稻田",
+      "nameEn": "Daotian",
+      "transfers": [],
+      "doorSide": "right"
+    },
+    {
+      "id": "changyang",
+      "name": "长阳",
+      "nameEn": "Changyang",
+      "transfers": [],
+      "doorSide": "both"
+    },
+    {
+      "id": "libafang",
+      "name": "篱笆房",
+      "nameEn": "Libafang",
+      "transfers": [],
+      "doorSide": "right"
+    },
+    {
+      "id": "guangyangcheng",
+      "name": "广阳城",
+      "nameEn": "Guangyangcheng",
+      "transfers": [],
+      "doorSide": "left"
+    },
+    {
+      "id": "liangxiangdaxuechengbei",
+      "name": "良乡大学城北",
+      "nameEn": "Liangxiang Daxuecheng Bei",
+      "transfers": [],
+      "doorSide": "right"
+    },
+    {
+      "id": "liangxiangdaxuecheng",
+      "name": "良乡大学城",
+      "nameEn": "Liangxiang Daxuecheng",
+      "transfers": [],
+      "doorSide": "right"
+    },
+    {
+      "id": "liangxiangdaxuechengxi",
+      "name": "良乡大学城西",
+      "nameEn": "Liangxiang Daxuecheng Xi",
+      "transfers": [],
+      "doorSide": "left"
+    },
+    {
+      "id": "liangxiangnanguan",
+      "name": "良乡南关",
+      "nameEn": "Liangxiang Nanguan",
+      "transfers": [],
+      "doorSide": "right"
+    },
+    {
+      "id": "suzhuang",
+      "name": "苏庄",
+      "nameEn": "Suzhuang",
+      "transfers": [],
+      "doorSide": "right"
+    },
+    {
+      "id": "yancundong",
+      "name": "阎村东",
+      "nameEn": "Yancundong",
+      "transfers": [
+        {
+          "lineId": "line-yanfang",
+          "lineName": "燕房线",
+          "lineColor": "#D85F26"
+        }
+      ],
+      "doorSide": "right"
+    }
+  ]
+}
